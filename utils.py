@@ -141,6 +141,33 @@ def plot_crossing_probability(extremes, weights):
   plt.ylim(0, min(np.sum(weights), 10))
   return plt.gca()
   
-def plot_2d_energy_profile(configurations, weights, X, Y):
-  figure = plt.figure(figsize=(4,3))
+def plot_2d_energy_profile(configurations, weights, X, Y, A=None, B=None, P=None):
+  figure = plt.figure(figsize=(4, 3))
+  bins = [[-np.inf] + list(X[0, :]),
+          list(Y[:, 0]) + [+np.inf]]
+  populations = np.histogramdd(configurations, bins, weights=weights)[0].T
+  V = -np.log(populations)
+  V -= V[len(X) // 2, len(Y) // 2]
+  plt.contourf(X, Y, V, levels=np.linspace(-14, 4, 19), cmap='magma')
+  plt.colorbar(label='Energy [$k_BT$]')
+  plt.xlim(-2.25, 2.25)
+  plt.ylim(-2.25, 2.25)
+  plt.gca().set_aspect('equal')
+
+  if A is not None:
+    plt.contourf(X, Y, A, levels=[0.5, 1.5], colors='dodgerblue')
+    plt.contour(X, Y, A, levels=[0.5, 1.5], colors='black', linewidths=1)
+    plt.text(*minimumA, 'A', ha='center', va='center', fontsize=20)
+
+  if B is not None:
+    plt.contourf(X, Y, B, levels=[0.5, 1.5], colors='tomato')
+    plt.contour(X, Y, B, levels=[0.5, 1.5], colors='black', linewidths=1)
+    plt.text(*minimumB, 'B', ha='center', va='center', fontsize=20)
+
+  if P is not None:
+    contour = plt.contour(X, Y, P, levels=np.linspace(.1, .9, 9),
+                          colors='#777777', linewidths=1)
+    plt.clabel(contour, manual=labels, colors='black')
+
   return plt.gca()
+  
