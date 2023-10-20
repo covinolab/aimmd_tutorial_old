@@ -1,3 +1,7 @@
+import scipy
+import numpy as np
+import matplotlib.pyplot as plt
+
 def plot_pes(X, Y, V, A=None, B=None, P=None, labels=None):
   """
   # states and committor
