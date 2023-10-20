@@ -35,14 +35,17 @@ def plot_pes(X, Y, V, A=None, B=None, P=None, labels=None):
 
   return plt.gca()
   
-def evaluate(model, descriptors):
+def evaluate(model, descriptors, batch_size=4096):
   """
   Model on descriptors.
   """
-  values = model(torch.tensor(descriptors, dtype=torch.float))
-  values = values.cpu().detach().numpy()
-  values = scipy.special.expit(values)
-  return values.ravel()
+  values = []
+  for batch in np.array_split(descriptors, len(descriptors) // batch_size):
+    batch_values = model(torch.tensor(batch, dtype=torch.float))
+    batch_values = values.cpu().detach().numpy()
+    batch_values = scipy.special.expit(batch_values)
+    values.append(batch.ravel())
+  return np.concatenate(values)
   
 def plot_model(model, X, Y, V, A, B, P,
                shooting_points=None, shooting_results=None):
