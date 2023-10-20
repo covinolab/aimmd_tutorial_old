@@ -2,6 +2,9 @@ import scipy
 import numpy as np
 import matplotlib.pyplot as plt
 
+minimumA = np.array([+0.21427517601479118, +1.874640867926128])
+minimumB = np.array([-0.25538755928343726, -1.845107485478632])
+
 def plot_pes(X, Y, V, A=None, B=None, P=None, labels=None):
   """
   # states and committor
