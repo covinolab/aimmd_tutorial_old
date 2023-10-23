@@ -40,11 +40,11 @@ def evaluate(model, descriptors, batch_size=4096):
   Model on descriptors.
   """
   values = []
-  for batch in np.array_split(descriptors, len(descriptors) // batch_size):
+  for batch in np.array_split(descriptors, max(1, len(descriptors) // batch_size)):
     batch_values = model(torch.tensor(batch, dtype=torch.float))
-    batch_values = values.cpu().detach().numpy()
+    batch_values = batch_values.cpu().detach().numpy()
     batch_values = scipy.special.expit(batch_values)
-    values.append(batch.ravel())
+    values.append(batch_values.ravel())
   return np.concatenate(values)
   
 def plot_model(model, X, Y, V, A, B, P,
