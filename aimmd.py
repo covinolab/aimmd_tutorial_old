@@ -2,6 +2,8 @@
 Auxiliary files for AIMMD.
 """
 
+import numpy as np
+import torch
 
 def shoot(x, y, inA, inB, engine, nsteps=100, max_length=10000, D=1.0, dt=1e-5):
     """
@@ -143,12 +145,11 @@ def evaluate(model, descriptors, batch_size=4096):
   Model on descriptors.
   """
   values = []
-  for batch in np.array_split(descriptors,
-      max(len(descriptors) // batch_size, 1)):
+  for batch in np.array_split(descriptors, max(1, len(descriptors) // batch_size)):
     batch_values = model(torch.tensor(batch, dtype=torch.float))
-    batch_values = batch_values.cpu().detach().numpy().ravel()
-    batch_values = scipy.special.expit(batch_values)
-    values.append(batch_values)
+    batch_values = batch_values.cpu().detach().numpy()
+    batch_values = .special.expit(batch_values)
+    values.append(batch_values.ravel())
   return np.concatenate(values)
 
 
